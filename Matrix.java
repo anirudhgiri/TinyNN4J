@@ -15,7 +15,7 @@ class Matrix{
     void randomize(){
         for(int i = 0; i<this.rows; i++)
             for(int j=0; j<this.cols; j++)
-                this.matrix[i][j] = (float)Math.random()*10;
+                this.matrix[i][j] = (float)((Math.random()*2)-1);
 
     }
 
@@ -71,6 +71,23 @@ class Matrix{
                     System.out.print(this.matrix[i][j] + " ");
                 System.out.println("\n");
                 }
+    }
+
+    static Matrix fromArray(float[] array){
+        Matrix m = new Matrix(array.length,1);
+        for(int i = 0; i < array.length; i++)
+            m.matrix[i][0] = array[0];
+        return m;
+    }
+
+    float sigmoid(float x){
+        return (float)(1 / (1 - Math.exp(-x)));
+    }
+
+    void sigmoidMap(){
+        for(int i = 0; i < this.rows; i++)
+            for(int j = 0; j < this.cols; j++)
+                this.matrix[i][j] = sigmoid(this.matrix[i][j]);
     }
 
 }

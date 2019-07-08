@@ -1,13 +1,39 @@
 //Written by Anirudh Giri
 
 class NeuralNetwork {
-    float[] inputs;
-    float[][] hiddens;
-    float[] outputs;
+    int inputs;
+    int hiddens;
+    int outputs;
 
-    NeuralNetwork(int NumberOfInputs, int hiddenLayers, int hiddenNodes, int NumberOfOutputs){
-        this.inputs = new float[NumberOfInputs];
-        this.hiddens = new float[hiddenLayers][hiddenNodes];
-        this.outputs = new float[NumberOfOutputs];
+    Matrix weightsIH;
+    Matrix weightsHO;
+
+    Matrix biasH;
+    Matrix biasO;
+
+    NeuralNetwork(int NumberOfInputs, int NumberOfHiddenNodes, int NumberOfOutputs){
+        this.inputs = NumberOfInputs;
+        this.hiddens = NumberOfHiddenNodes;
+        this.outputs = NumberOfInputs;
+
+        weightsIH = new Matrix(this.hiddens, this.inputs);
+        weightsHO = new Matrix(this.outputs, this.hiddens);
+
+        weightsIH.randomize();
+        weightsHO.randomize();
+
+        biasH = new Matrix(hiddens, 1);
+        biasO = new Matrix(outputs, 1);
     }
+
+    void feedForward(float[] inputArray){
+        
+        Matrix inputMatrix = Matrix.fromArray(inputArray);
+
+        Matrix hidden = Matrix.multiply(weightsIH, inputMatrix);
+
+        hidden.add(this.biasH);
+
+    }
+
 }

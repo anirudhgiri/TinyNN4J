@@ -80,6 +80,14 @@ class Matrix{
         return m;
     }
 
+    static float[][] toArray(Matrix m){
+        float[][] arr = new float[m.rows][m.cols];
+        for(int i = 0; i< m.rows; i++)
+            for(int j = 0; j< m.cols; j++)
+                arr[i][j] = m.matrix[i][j];
+        return arr;
+    }
+
     float sigmoid(float x){
         return (float)(1 / (1 - Math.exp(-x)));
     }

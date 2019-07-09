@@ -1,4 +1,6 @@
 //Written by Anirudh Giri
+//Inspited by the book Make Your Own Neural Network by Tariq Rashid and
+//youtube lessons by Daniel Shiffman from The Coding Train
 
 class NeuralNetwork {
     int inputs;
@@ -24,16 +26,24 @@ class NeuralNetwork {
 
         biasH = new Matrix(hiddens, 1);
         biasO = new Matrix(outputs, 1);
+
+        biasH.randomize();
+        biasO.randomize();
     }
 
-    void feedForward(float[] inputArray){
+    float[] feedForward(float[] inputArray){
         
         Matrix inputMatrix = Matrix.fromArray(inputArray);
 
         Matrix hidden = Matrix.multiply(weightsIH, inputMatrix);
-
         hidden.add(this.biasH);
+        hidden.sigmoidMap();
 
+        Matrix output = Matrix.multiple(weightsHO, hidden);
+        output.add(biasO);
+        output.sigmoidMap();
+
+        return Matrix.toArray(output)[0];
     }
 
 }

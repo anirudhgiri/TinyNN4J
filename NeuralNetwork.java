@@ -39,7 +39,7 @@ class NeuralNetwork {
         hidden.add(this.biasH);
         hidden.sigmoidMap();
 
-        Matrix output = Matrix.multiple(weightsHO, hidden);
+        Matrix output = Matrix.multiply(weightsHO, hidden);
         output.add(biasO);
         output.sigmoidMap();
 

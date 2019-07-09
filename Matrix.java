@@ -89,7 +89,7 @@ class Matrix{
     }
 
     float sigmoid(float x){
-        return (float)(1 / (1 - Math.exp(-x)));
+        return (float)(1 / (1 + Math.exp(-x)));
     }
 
     void sigmoidMap(){

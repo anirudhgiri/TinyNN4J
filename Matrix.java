@@ -25,12 +25,19 @@ class Matrix{
                 this.matrix[i][j] *= n;
     }
 
+    void multiply(float n){
+        for(int i=0; i<this.rows; i++)
+            for(int j=0; j<this.cols; j++)
+                this.matrix[i][j] *= n;
+    }
+
     static Matrix multiply(Matrix m1, Matrix m2){
         if(m1.cols != m2.rows){
-            System.out.println("Columns of first matrix must equal rows of second matrix");
-            return null;
+            System.err.println("Matrix multiply size problem!");
+            System.err.println("M1 : "+ m1.rows + " " + m1.cols);
+            System.err.println("M2 : "+ m2.rows + " " + m2.cols);
         }
-
+        
         Matrix result = new Matrix(m1.rows, m2.cols);
 
         for(int i =0; i < result.rows; i++)
@@ -45,6 +52,12 @@ class Matrix{
             
     }
 
+    void hadamard(Matrix m){
+        for(int i=0; i<m.rows; i++)
+            for(int j=0; j<m.cols; j++)
+                this.matrix[i][j] *= m.matrix[i][j];
+    }
+
     void add(int n){
         for(int i=0; i<this.rows; i++)
             for(int j=0; j<this.cols; j++)
@@ -52,13 +65,30 @@ class Matrix{
     }
 
     void add(Matrix m){
+        if(this.rows != m.rows || this.cols != m.cols){
+            System.err.println("add() rows cols not matching exception");
+        }
+        
         for(int i=0;i<this.rows;i++)
             for(int j=0; j<this.cols; j++)
                 this.matrix[i][j] += m.matrix[i][j];
     }
 
+    static Matrix subtract(Matrix m1, Matrix m2){
+        if(m1.rows != m2.rows || m1.cols != m2.cols)
+            System.out.println(m1.rows+" "+m1.cols+"\n"+m2.rows+" "+m2.cols);
+        
+        Matrix result = new Matrix(m2.rows, m2.cols);
+
+        for(int i = 0; i<m2.rows; i++)
+            for(int j = 0; j<m2.cols; j++)
+                result.matrix[i][j] = m1.matrix[i][j] - m2.matrix[i][j];
+        
+        return result;   
+    }
+
     static Matrix transpose(Matrix m){
-        Matrix transposedMatrix = new Matrix(m.rows, m.cols);
+        Matrix transposedMatrix = new Matrix(m.cols, m.rows);
         for(int i = 0; i<m.rows; i++)
             for(int j = 0; j<m.cols; j++)
                 transposedMatrix.matrix[j][i] = m.matrix[i][j];
@@ -96,6 +126,15 @@ class Matrix{
         for(int i = 0; i < this.rows; i++)
             for(int j = 0; j < this.cols; j++)
                 this.matrix[i][j] = sigmoid(this.matrix[i][j]);
+    }
+
+    static Matrix derivativeSigmoidMap(Matrix m){
+        Matrix output = new Matrix(m.rows, m.cols);
+        
+        for(int i = 0; i < output.rows; i++)
+            for(int j = 0; j < output.cols; j++)
+            output.matrix[i][j] = (output.matrix[i][j]) * (1.0f-output.matrix[i][j]);
+        return output;
     }
 
 }

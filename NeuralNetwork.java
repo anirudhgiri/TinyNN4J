@@ -32,8 +32,7 @@ class NeuralNetwork {
         biasO.randomize();
     }
 
-    Matrix feedForward(float[] inputArray){
-        
+    Matrix predict(float[] inputArray){
         Matrix inputMatrix = Matrix.fromArray(inputArray);
 
         Matrix hidden = Matrix.multiply(this.weightsIH, inputMatrix);
@@ -94,6 +93,5 @@ class NeuralNetwork {
         
         //Adjust the bias by it's deltas
         this.biasH.add(hiddenGradient);
-
     }
 }

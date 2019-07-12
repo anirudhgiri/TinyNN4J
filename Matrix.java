@@ -15,7 +15,7 @@ class Matrix{
     void randomize(){
         for(int i = 0; i<this.rows; i++)
             for(int j=0; j<this.cols; j++)
-                this.matrix[i][j] = (float)((Math.random()*2)-1);
+                this.matrix[i][j] = (float)(Math.random());
 
     }
 
@@ -106,7 +106,7 @@ class Matrix{
     static Matrix fromArray(float[] array){
         Matrix m = new Matrix(array.length,1);
         for(int i = 0; i < array.length; i++)
-            m.matrix[i][0] = array[0];
+            m.matrix[i][0] = array[i];
         return m;
     }
 
@@ -133,7 +133,7 @@ class Matrix{
         
         for(int i = 0; i < output.rows; i++)
             for(int j = 0; j < output.cols; j++)
-            output.matrix[i][j] = (output.matrix[i][j]) * (1.0f-output.matrix[i][j]);
+            output.matrix[i][j] = (m.matrix[i][j]) * (1.0f-m.matrix[i][j]);
         return output;
     }
 

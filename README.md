@@ -7,10 +7,8 @@ TinyNN4J is a Java library for using neural networks
 ## Usage
 
 ```java
-/*
-(number of inputs, number of nodes in 
-hidden layer, number of outputs)
-*/
+
+//(number of inputs, number of nodes in hidden layer, number of outputs)
 NeuralNetwork n = new NeuralNetwork(ins,hiddenNodes,outs);
 
 float[] trainingInputs = {1.0,2.0,3.0};

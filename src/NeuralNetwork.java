@@ -33,6 +33,7 @@ class NeuralNetwork {
     }
 
     Matrix predict(float[] inputArray){
+        //Feedforward Algorithm
         Matrix inputMatrix = Matrix.fromArray(inputArray);
 
         Matrix hidden = Matrix.multiply(this.weightsIH, inputMatrix);
@@ -47,7 +48,7 @@ class NeuralNetwork {
     }
 
     void train(float[] inputArray, float[] targetsArray){
-        //Feedforward
+        //Feedforward Algorithm
         Matrix inputsMatrix = Matrix.fromArray(inputArray);
 
         Matrix hidden = Matrix.multiply((this.weightsIH), inputsMatrix);

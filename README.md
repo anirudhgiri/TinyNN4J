@@ -1,7 +1,7 @@
 ![logo](https://i.imgur.com/D6f4eJR.png)
 # TinyNeuralNetwork4Java
 
-TinyNN4J is a Java library for using neural networks
+TinyNN4J is a Java library for implementing Neural Networks into your projects
 
 
 ## Usage

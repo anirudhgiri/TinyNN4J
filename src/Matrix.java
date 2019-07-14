@@ -105,7 +105,7 @@ class Matrix{
     //element-wise subtraction of a matrix with another matrix 
     Matrix subtract(Matrix m){
         if(m.rows != this.rows || m.cols != this.cols)
-            System.out.println(m1.rows+" "+m1.cols+"\n"+m2.rows+" "+m2.cols);
+            System.out.println(m.rows+" "+m.cols+"\n"+this.rows+" "+this.cols);
         
         Matrix result = new Matrix(m.rows, m.cols);
 

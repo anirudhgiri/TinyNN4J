@@ -6,7 +6,7 @@ TinyNN4J is a Java library for implementing Neural Networks into your projects
 
 ## Usage
 [Download](https://github.com/anirudhgiri/TinyNN4J/raw/master/lib/TinyNN4J.jar) the jar file and add it to your build path.
-To use with Processing3, simple drag the jar file into the Processing editor.
+To use with Processing3, simply drag the jar file into the Processing editor.
 ```java
 
 //(number of inputs, number of nodes in hidden layer, number of outputs)

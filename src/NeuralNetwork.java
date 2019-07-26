@@ -1,5 +1,5 @@
 //Written by Anirudh Giri
-//Inspited by the book Make Your Own Neural Network by Tariq Rashid and
+//Inspired by the book Make Your Own Neural Network by Tariq Rashid and
 //youtube lessons by Daniel Shiffman from The Coding Train
 
 class NeuralNetwork {

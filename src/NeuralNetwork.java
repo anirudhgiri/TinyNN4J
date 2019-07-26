@@ -22,17 +22,17 @@ class NeuralNetwork {
         weightsIH = new Matrix(this.hiddens, this.inputs);
         weightsHO = new Matrix(this.outputs, this.hiddens);
 
-        weightsIH.randomize();
-        weightsHO.randomize();
+        weightsIH.randomize(-1,1);
+        weightsHO.randomize(-1,1);
 
         biasH = new Matrix(this.hiddens, 1);
         biasO = new Matrix(this.outputs, 1);
 
-        biasH.randomize();
-        biasO.randomize();
+        biasH.randomize(-1,1);
+        biasO.randomize(-1,1);
     }
 
-    Matrix predict(float[] inputArray){
+    float[] predict(float[] inputArray){
         //Feedforward Algorithm
         Matrix inputMatrix = Matrix.fromArray(inputArray);
 
@@ -43,8 +43,7 @@ class NeuralNetwork {
         Matrix output = Matrix.multiply(this.weightsHO,hidden);
         output.add(this.biasO);
         output.sigmoidMap();
-
-        return output;
+        return Matrix.toArray(Matrix.transpose(output))[0];
     }
 
     void train(float[] inputArray, float[] targetsArray){

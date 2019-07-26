@@ -18,7 +18,7 @@ float[] trainingOutputs = {0.5,0.7,0.9};
 n.train(trainingInputs,trainingOutputs);
 
 float[] testData = {5.0};
-float outputs[] = n.test(testData);
+float outputs[] = n.predict(testData);
 ```
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

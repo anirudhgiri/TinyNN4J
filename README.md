@@ -10,14 +10,16 @@ To use with Processing3, simply drag the jar file into the Processing editor.
 ```java
 
 //(number of inputs, number of nodes in hidden layer, number of outputs)
-NeuralNetwork n = new NeuralNetwork(ins,hiddenNodes,outs);
+NeuralNetwork nn = new NeuralNetwork(ins,hiddenNodes,outs);
 
+//3 inputs and 1 output
 float[] trainingInputs = {1.0,2.0,3.0};
-float[] trainingOutputs = {0.5,0.7,0.9};
+float[] trainingOutputs = {0.5};
 
-n.train(trainingInputs,trainingOutputs);
+nn.train(trainingInputs,trainingOutputs);
 
-float[] testData = {5.0};
+float[] testData = {1.1,2.1,3.1};
+//output will be a float[] with one element (the output)
 float outputs[] = n.predict(testData);
 ```
 ## Contributing

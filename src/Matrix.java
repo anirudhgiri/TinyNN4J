@@ -172,7 +172,7 @@ class Matrix{
 
     //returns the value of ReLU(x)
     float relu(float x){
-        return Math.max(0, x);
+        return x > 0 ? x : 0;
     }
 
     //applies the ReLU function to each element of the matrix
@@ -207,7 +207,7 @@ class Matrix{
 
         for(int i = 0; i < output.rows; i++)
             for(int j = 0; j < output.cols; j++)
-            output.matrix[i][j] = (m.matrix[i][j])>0 ? 1 : 0;
+            output.matrix[i][j] = (m.matrix[i][j])>0 ? 1.0f : 0.0f;
         
         return output;
     }

@@ -10,7 +10,10 @@ To use with Processing3, simply drag the jar file into the Processing editor.
 ```java
 
 //(number of inputs, number of nodes in hidden layer, number of outputs)
-NeuralNetwork nn = new NeuralNetwork(ins,hiddenNodes,outs);
+NeuralNetwork nn = new NeuralNetwork(3,5,1);
+
+nn.setActivationFunction("RELU"); //default is SIGMOID
+nn.setLearningRate(0.01f); //default is 0.1f
 
 //3 inputs and 1 output
 float[] trainingInputs = {1.0,2.0,3.0};
@@ -19,7 +22,7 @@ float[] trainingOutputs = {0.5};
 nn.train(trainingInputs,trainingOutputs);
 
 float[] testData = {1.1,2.1,3.1};
-//output will be a float[] with one element (the output)
+//output will be a float[] with size equal to the number of output nodes
 float outputs[] = n.predict(testData);
 ```
 ## Contributing

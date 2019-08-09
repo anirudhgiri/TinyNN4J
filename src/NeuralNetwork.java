@@ -12,7 +12,7 @@ class NeuralNetwork {
 
     Matrix biasH;
     Matrix biasO;
-    float learning_rate = 0.01f;
+    float learning_rate = 0.1f;
 
     String activationFunction;
 

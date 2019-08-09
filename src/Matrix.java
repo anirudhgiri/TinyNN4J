@@ -212,6 +212,7 @@ class Matrix{
         return output;
     }
 
+    //applies the relevant activation function to each element of the matrix
     void activationMap(String activationFunction){
         if(activationFunction.equals("RELU"))
         this.reluMap();
@@ -220,6 +221,7 @@ class Matrix{
         this.sigmoidMap();
     }
 
+    //applies the derivative relevant activation function to each element of the matrix
     static Matrix derivativeActivationMap(String activationFunction, Matrix m){
         if(activationFunction.equals("RELU"))
         return Matrix.derivativeReluMap(m);

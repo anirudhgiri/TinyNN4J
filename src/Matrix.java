@@ -172,7 +172,7 @@ class Matrix{
 
     //returns the value of ReLU(x)
     float relu(float x){
-        return x > 0 ? x : 0;
+        return x > 0 ? 1.0f : 0.0f;
     }
 
     //applies the ReLU function to each element of the matrix
@@ -185,10 +185,10 @@ class Matrix{
     //applies the softmax function to every element in the column matrix
     void softmax(){
         float sum = 0;
-        for(float f : this.matrix[0])
-            sum += (float)Math.exp(f);
-        for(int i = 0; i<this.cols;i++)
-            this.matrix[0][i] = (float)Math.exp(this.matrix[0][i])/sum;
+        for(int i = 0; i<this.rows;i++)
+            sum += (float)Math.exp(this.matrix[i][0]);
+        for(int i = 0; i<this.rows;i++)
+            this.matrix[i][0] = (float)Math.exp(this.matrix[i][0])/sum;
     }
 
     //applies the derivative of the sigmoid function to each element of the matrix
@@ -207,7 +207,7 @@ class Matrix{
 
         for(int i = 0; i < output.rows; i++)
             for(int j = 0; j < output.cols; j++)
-            output.matrix[i][j] = (m.matrix[i][j])>0 ? 1.0f : 0.0f;
+            output.matrix[i][j] = (m.matrix[i][j])>=0 ? 1.0f : 0.0f;
         
         return output;
     }

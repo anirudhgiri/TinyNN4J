@@ -12,7 +12,7 @@ class NeuralNetwork {
 
     Matrix biasH;
     Matrix biasO;
-    float learning_rate = 0.1f;
+    float learning_rate = 0.01f;
 
     String activationFunction;
 
@@ -55,6 +55,16 @@ class NeuralNetwork {
 
         this.activationFunction = (activationFunction.equalsIgnoreCase("SIGMOID") 
         || activationFunction.equalsIgnoreCase("RELU")) ? activationFunction.toUpperCase() : "SIGMOID";
+    }
+
+    //Sets the learning rate for the neural network
+    void setLearningRate(float learning_rate){
+        this.learning_rate = learning_rate;
+    }
+
+    //Sets the activation function for the neural network
+    void setActivationFunction(String activationFunction){
+        this.activationFunction = activationFunction;
     }
 
     float[] predict(float[] inputArray){

@@ -14,6 +14,8 @@ class NeuralNetwork {
     Matrix biasO;
     float learning_rate = 0.1f;
 
+    String activationFunction;
+
     NeuralNetwork(int NumberOfInputs, int NumberOfHiddenNodes, int NumberOfOutputs){
         this.inputs = NumberOfInputs;
         this.hiddens = NumberOfHiddenNodes;
@@ -30,6 +32,39 @@ class NeuralNetwork {
 
         biasH.randomize(-1,1);
         biasO.randomize(-1,1);
+
+        activationFunction = "SIGMOID";
+    }
+
+    NeuralNetwork(int NumberOfInputs, int NumberOfHiddenNodes, int NumberOfOutputs, String activationFunction){
+        this.inputs = NumberOfInputs;
+        this.hiddens = NumberOfHiddenNodes;
+        this.outputs = NumberOfOutputs;
+
+        weightsIH = new Matrix(this.hiddens, this.inputs);
+        weightsHO = new Matrix(this.outputs, this.hiddens);
+
+        weightsIH.randomize(-1,1);
+        weightsHO.randomize(-1,1);
+
+        biasH = new Matrix(this.hiddens, 1);
+        biasO = new Matrix(this.outputs, 1);
+
+        biasH.randomize(-1,1);
+        biasO.randomize(-1,1);
+
+        this.activationFunction = (activationFunction.equalsIgnoreCase("SIGMOID") 
+        || activationFunction.equalsIgnoreCase("RELU")) ? activationFunction.toUpperCase() : "SIGMOID";
+    }
+
+    //Sets the learning rate for the neural network
+    void setLearningRate(float learning_rate){
+        this.learning_rate = learning_rate;
+    }
+
+    //Sets the activation function for the neural network
+    void setActivationFunction(String activationFunction){
+        this.activationFunction = activationFunction;
     }
 
     float[] predict(float[] inputArray){
@@ -38,11 +73,11 @@ class NeuralNetwork {
 
         Matrix hidden = Matrix.multiply(this.weightsIH, inputMatrix);
         hidden.add(this.biasH);
-        hidden.sigmoidMap();
+        hidden.activationMap(this.activationFunction);
 
         Matrix output = Matrix.multiply(this.weightsHO,hidden);
         output.add(this.biasO);
-        output.sigmoidMap();
+        output.softmax();
         return Matrix.toArray(Matrix.transpose(output))[0];
     }
 
@@ -52,11 +87,11 @@ class NeuralNetwork {
 
         Matrix hidden = Matrix.multiply((this.weightsIH), inputsMatrix);
         hidden.add(this.biasH);
-        hidden.sigmoidMap();
+        hidden.activationMap(this.activationFunction);
 
         Matrix outputs = Matrix.multiply(this.weightsHO, hidden);
         outputs.add(this.biasO);
-        outputs.sigmoidMap();
+        outputs.softmax();
         
         //Creating a targets matrix from the float array
         Matrix targets = Matrix.fromArray(targetsArray);
@@ -65,7 +100,7 @@ class NeuralNetwork {
         Matrix outputErrors = Matrix.subtract(targets,outputs);
         
         //Calculate the gradients
-        Matrix gradients = Matrix.derivativeSigmoidMap(outputs);
+        Matrix gradients = Matrix.derivativeActivationMap(this.activationFunction,outputs);
         gradients.hadamard(outputErrors);
         gradients.multiply(this.learning_rate);
 
@@ -83,7 +118,7 @@ class NeuralNetwork {
         Matrix hiddenErrors = Matrix.multiply(Matrix.transpose(this.weightsHO), outputErrors);
         
         //Caclulate the gradients for the hidden layers
-        Matrix hiddenGradient = Matrix.derivativeSigmoidMap(hidden);
+        Matrix hiddenGradient = Matrix.derivativeActivationMap(this.activationFunction,hidden);
         hiddenGradient.hadamard(hiddenErrors);
         hiddenGradient.multiply(this.learning_rate);
 

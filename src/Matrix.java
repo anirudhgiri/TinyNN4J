@@ -170,6 +170,27 @@ class Matrix{
                 this.matrix[i][j] = sigmoid(this.matrix[i][j]);
     }
 
+    //returns the value of ReLU(x)
+    float relu(float x){
+        return x > 0 ? 1.0f : 0.0f;
+    }
+
+    //applies the ReLU function to each element of the matrix
+    void reluMap(){
+        for(int i = 0; i < this.rows; i++)
+            for(int j = 0; j < this.cols; j++)
+                this.matrix[i][j] = relu(this.matrix[i][j]);
+    }
+
+    //applies the softmax function to every element in the column matrix
+    void softmax(){
+        float sum = 0;
+        for(int i = 0; i<this.rows;i++)
+            sum += (float)Math.exp(this.matrix[i][0]);
+        for(int i = 0; i<this.rows;i++)
+            this.matrix[i][0] = (float)Math.exp(this.matrix[i][0])/sum;
+    }
+
     //applies the derivative of the sigmoid function to each element of the matrix
     static Matrix derivativeSigmoidMap(Matrix m){
         Matrix output = new Matrix(m.rows, m.cols);
@@ -178,6 +199,34 @@ class Matrix{
             for(int j = 0; j < output.cols; j++)
             output.matrix[i][j] = (m.matrix[i][j]) * (1.0f-m.matrix[i][j]);
         return output;
+    }
+
+    //applies the derivative of the ReLU function to each element of the matrix
+    static Matrix derivativeReluMap(Matrix m){
+        Matrix output = new Matrix(m.rows,m.cols);
+
+        for(int i = 0; i < output.rows; i++)
+            for(int j = 0; j < output.cols; j++)
+            output.matrix[i][j] = (m.matrix[i][j])>=0 ? 1.0f : 0.0f;
+        
+        return output;
+    }
+
+    //applies the relevant activation function to each element of the matrix
+    void activationMap(String activationFunction){
+        if(activationFunction.equals("RELU"))
+        this.reluMap();
+
+        else
+        this.sigmoidMap();
+    }
+
+    //applies the derivative relevant activation function to each element of the matrix
+    static Matrix derivativeActivationMap(String activationFunction, Matrix m){
+        if(activationFunction.equals("RELU"))
+        return Matrix.derivativeReluMap(m);
+
+        return Matrix.derivativeSigmoidMap(m);
     }
 
 }

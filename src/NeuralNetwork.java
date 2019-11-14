@@ -4,20 +4,24 @@
 
 class NeuralNetwork {
     int inputs;
+    int hLayers;
     int hiddens;
     int outputs;
 
     Matrix weightsIH;
     Matrix weightsHO;
 
-    Matrix biasH;
+    Matrix hWeights[];
+
+    Matrix biasH[];
     Matrix biasO;
     float learning_rate = 0.1f;
 
     String activationFunction;
 
-    NeuralNetwork(int NumberOfInputs, int NumberOfHiddenNodes, int NumberOfOutputs){
+    NeuralNetwork(int NumberOfInputs, int NumberOfHiddenLayers, int NumberOfHiddenNodes, int NumberOfOutputs){
         this.inputs = NumberOfInputs;
+        this.hLayers = NumberOfHiddenLayers;
         this.hiddens = NumberOfHiddenNodes;
         this.outputs = NumberOfOutputs;
 
@@ -27,17 +31,29 @@ class NeuralNetwork {
         weightsIH.randomize(-1,1);
         weightsHO.randomize(-1,1);
 
-        biasH = new Matrix(this.hiddens, 1);
-        biasO = new Matrix(this.outputs, 1);
+        hWeights = new Matrix[hLayers-1];
+        for(int i = 0; i<hWeights.length; i++){
+            hWeights[i] = new Matrix(this.hiddens,this.hiddens);
+            hWeights[i].randomize(-1,1);
+        }
 
-        biasH.randomize(-1,1);
+        // biasH = new Matrix(this.hiddens, 1);
+        // biasH.randomize(-1,1);
+        biasH = new Matrix[hLayers-1];
+        for(int i=0; i<biasH.length; i++){
+            biasH[i] = new Matrix(this.hiddens, 1);
+            biasH[i].randomize(-1,1);
+        }
+
+        biasO = new Matrix(this.outputs, 1);
         biasO.randomize(-1,1);
 
         activationFunction = "SIGMOID";
     }
 
-    NeuralNetwork(int NumberOfInputs, int NumberOfHiddenNodes, int NumberOfOutputs, String activationFunction){
+    NeuralNetwork(int NumberOfInputs, int NumberOfHiddenLayers, int NumberOfHiddenNodes, int NumberOfOutputs, String activationFunction){
         this.inputs = NumberOfInputs;
+        this.hLayers = NumberOfHiddenLayers;
         this.hiddens = NumberOfHiddenNodes;
         this.outputs = NumberOfOutputs;
 
@@ -47,10 +63,21 @@ class NeuralNetwork {
         weightsIH.randomize(-1,1);
         weightsHO.randomize(-1,1);
 
-        biasH = new Matrix(this.hiddens, 1);
-        biasO = new Matrix(this.outputs, 1);
+        hWeights = new Matrix[hLayers-1];
+        for(int i = 0; i<hWeights.length; i++){
+            hWeights[i] = new Matrix(this.hiddens,this.hiddens);
+            hWeights[i].randomize(-1,1);
+        }
 
-        biasH.randomize(-1,1);
+        // biasH = new Matrix(this.hiddens, 1);
+        // biasH.randomize(-1,1);
+        biasH = new Matrix[hLayers+1];
+        for(int i=0; i<biasH.length; i++){
+            biasH[i] = new Matrix(this.hiddens, 1);
+            biasH[i].randomize(-1,1);
+        }
+
+        biasO = new Matrix(this.outputs, 1);
         biasO.randomize(-1,1);
 
         this.activationFunction = (activationFunction.equalsIgnoreCase("SIGMOID") 
@@ -71,11 +98,21 @@ class NeuralNetwork {
         //Feedforward Algorithm
         Matrix inputMatrix = Matrix.fromArray(inputArray);
 
-        Matrix hidden = Matrix.multiply(this.weightsIH, inputMatrix);
-        hidden.add(this.biasH);
-        hidden.activationMap(this.activationFunction);
+        // Matrix hidden = Matrix.multiply(this.weightsIH, inputMatrix);
+        // hidden.add(this.biasH);
+        // hidden.activationMap(this.activationFunction);
 
-        Matrix output = Matrix.multiply(this.weightsHO,hidden);
+        Matrix hiddens[] = new Matrix[hLayers];
+        hiddens[0] = Matrix.multiply(this.weightsIH, inputMatrix);
+        hiddens[0].add(biasH[0]);
+        hiddens[0].activationMap(this.activationFunction);
+        for(int i=0; i<hiddens.length; i++){
+            hiddens[i+1] = Matrix.multiply(this.hWeights[i],hiddens[i]);
+            hiddens[i+1].add(biasH[i+1]);
+            hiddens[i+1].activationMap(this.activationFunction);
+        } 
+
+        Matrix output = Matrix.multiply(this.weightsHO,hiddens[hiddens.length-1]);
         output.add(this.biasO);
         output.softmax();
         return Matrix.toArray(Matrix.transpose(output))[0];
@@ -83,29 +120,35 @@ class NeuralNetwork {
 
     void train(float[] inputArray, float[] targetsArray){
         //Feedforward Algorithm
-        Matrix inputsMatrix = Matrix.fromArray(inputArray);
+        Matrix inputMatrix = Matrix.fromArray(inputArray);
 
-        Matrix hidden = Matrix.multiply((this.weightsIH), inputsMatrix);
-        hidden.add(this.biasH);
-        hidden.activationMap(this.activationFunction);
+        Matrix hiddens[] = new Matrix[hLayers];
+        hiddens[0] = Matrix.multiply(this.weightsIH, inputMatrix);
+        hiddens[0].add(biasH[0]);
+        hiddens[0].activationMap(this.activationFunction);
+        for(int i=0; i<hiddens.length; i++){
+            hiddens[i+1] = Matrix.multiply(this.hWeights[i],hiddens[i]);
+            hiddens[i+1].add(biasH[i+1]);
+            hiddens[i+1].activationMap(this.activationFunction);
+        } 
 
-        Matrix outputs = Matrix.multiply(this.weightsHO, hidden);
-        outputs.add(this.biasO);
-        outputs.softmax();
-        
+        Matrix output = Matrix.multiply(this.weightsHO,hiddens[hiddens.length-1]);
+        output.add(this.biasO);
+        output.softmax();
+
         //Creating a targets matrix from the float array
         Matrix targets = Matrix.fromArray(targetsArray);
 
         //Calculating the errors
-        Matrix outputErrors = Matrix.subtract(targets,outputs);
+        Matrix outputErrors = Matrix.subtract(targets,output);
         
         //Calculate the gradients
-        Matrix gradients = Matrix.derivativeActivationMap(this.activationFunction,outputs);
+        Matrix gradients = Matrix.derivativeActivationMap(this.activationFunction,output);
         gradients.hadamard(outputErrors);
         gradients.multiply(this.learning_rate);
 
         //Calculate the deltas
-        Matrix weightsHO_Deltas = Matrix.multiply(gradients,Matrix.transpose(hidden));
+        Matrix weightsHO_Deltas = Matrix.multiply(gradients,Matrix.transpose(hiddens[hLayers-1]));
         
         //Adjust the weights by it's deltas
         this.weightsHO.add(weightsHO_Deltas);
@@ -113,20 +156,47 @@ class NeuralNetwork {
         //Adjust the bias by it's deltas
         this.biasO.add(gradients);
 
-        
         //Calculate the hidden layer errors
-        Matrix hiddenErrors = Matrix.multiply(Matrix.transpose(this.weightsHO), outputErrors);
+        Matrix hiddenErrors[] = new Matrix[hLayers];
+
+        //Calculate the errors for the HO layer
+        hiddenErrors[hLayers-1] = Matrix.multiply(Matrix.transpose(this.weightsHO), outputErrors);
+
+        //Calculate the gradients for the HO layer
+        Matrix hiddenGradient = Matrix.derivativeActivationMap(this.activationFunction,hiddens[hLayers-1]);
+        hiddenGradient.hadamard(hiddenErrors[hLayers-1]);
+        hiddenGradient.multiply(this.learning_rate);
         
-        //Caclulate the gradients for the hidden layers
-        Matrix hiddenGradient = Matrix.derivativeActivationMap(this.activationFunction,hidden);
-        hiddenGradient.hadamard(hiddenErrors);
+        Matrix wDeltas;
+        if(hLayers != 1){
+        wDeltas = Matrix.multiply(hiddenGradient,Matrix.transpose(hiddens[hLayers-2]));
+        this.hWeights[hLayers-1].add(wDeltas);
+        biasH[hLayers-2].add(hiddenGradient);
+        }
+
+        for(int i = hLayers-2; i>0; i--){
+            hiddenErrors[i] = Matrix.multiply(Matrix.transpose(this.hWeights[i-1]), hiddenErrors[i+1]);
+
+            hiddenGradient = Matrix.derivativeActivationMap(this.activationFunction,hiddens[i]);
+            hiddenGradient.hadamard(hiddenErrors[i]);
+            hiddenGradient.multiply(this.learning_rate);
+
+            wDeltas = Matrix.multiply(hiddenGradient,Matrix.transpose(hiddens[i-1]));
+            this.hWeights[i-1].add(wDeltas);
+
+            biasH[i].add(hiddenGradient);
+        }
+
+        hiddenErrors[0] = Matrix.multiply(Matrix.transpose(this.hWeights[1]), hiddenErrors[1]);
+
+        hiddenGradient = Matrix.derivativeActivationMap(this.activationFunction,hiddens[0]);
+        hiddenGradient.hadamard(hiddenErrors[0]);
         hiddenGradient.multiply(this.learning_rate);
 
-        //calculate the deltas for all weights from the input layer to the hidden layer
-        Matrix weightsIH_Deltas = Matrix.multiply(hiddenGradient,Matrix.transpose(inputsMatrix));
-        this.weightsIH.add(weightsIH_Deltas);
-        
-        //Adjust the bias by it's deltas
-        this.biasH.add(hiddenGradient);
+        wDeltas = Matrix.multiply(hiddenGradient,Matrix.transpose(weightsIH));
+        this.weightsIH.add(wDeltas);
+
+        biasH[0].add(hiddenGradient);
+
     }
 }
